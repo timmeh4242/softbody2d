@@ -1,24 +1,27 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEditor;
+﻿namespace FinerGames {
 
-[CustomEditor(typeof(Softbody2D))]
-public class Softbody2DEditor : Editor
-{
-	public override void OnInspectorGUI()
+	using UnityEngine;
+	using System.Collections;
+	using UnityEditor;
+
+	[CustomEditor(typeof(Softbody2D))]
+	public class Softbody2DEditor : Editor
 	{
-		DrawDefaultInspector();
-
-		if(GUILayout.Button("Generate Softbody2D"))
+		public override void OnInspectorGUI()
 		{
-			Softbody2D script = (Softbody2D)target;
-			script.Generate (true);
-		}
+			DrawDefaultInspector();
 
-		if(GUILayout.Button("Clear Forces"))
-		{
-			Softbody2D script = (Softbody2D)target;
-			script.ClearForces ();
+			if(GUILayout.Button("Generate Softbody2D"))
+			{
+				Softbody2D script = (Softbody2D)target;
+				script.Generate (true);
+			}
+
+			if(GUILayout.Button("Clear Forces"))
+			{
+				Softbody2D script = (Softbody2D)target;
+				script.ClearForces ();
+			}
 		}
 	}
 }
