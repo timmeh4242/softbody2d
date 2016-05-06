@@ -21,12 +21,22 @@
 		public float Mass = 1f;
 		public float Radius = 1f;
 
+		[HideInInspector]
 		public List<PointMass> m_PointMasses = new List<PointMass> ();
+
+		[HideInInspector]
 		public Rigidbody2D m_CentralPointMass;
+
+		[HideInInspector]
 		public PolygonCollider2D m_PolygonCollider2D;
+
 //		Softmesh2D m_Softmesh2D;
-		SoftSpriteMeshLink m_SoftSpriteMeshLink;
+		DeformableSprite m_DeformableSprite;
+
+		[HideInInspector]
 		public List<Triangle> Triangles = new List<Triangle> ();
+
+		[HideInInspector]
 		public int[] TriangleIndex;
 
 
@@ -39,7 +49,7 @@
 
 		void Awake() {
 			Generate (false);
-			m_SoftSpriteMeshLink = this.GetComponent<SoftSpriteMeshLink> ();
+			m_DeformableSprite = this.GetComponent<DeformableSprite> ();
 		}
 		// Use this for initialization
 		void Start () {
@@ -89,7 +99,7 @@
 
 				UpdateCollider ();
 //				m_Softmesh2D.UpdateMesh2 ();
-				m_SoftSpriteMeshLink.UpdateMesh (m_PointMasses.ToArray ());
+				m_DeformableSprite.UpdateMesh (m_PointMasses.ToArray ());
 			}
 		}
 
