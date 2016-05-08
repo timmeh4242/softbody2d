@@ -171,8 +171,11 @@
 			TriangleIndex = new int[m_PointMasses.Count];
 			for (int i = 0; i < m_PointMasses.Count; i++) {
 				var centerSpring = m_PointMasses[i].gameObject.AddComponent<SpringJoint2D> ();
-				centerSpring.connectedBody = m_CentralPointMass;
 				centerSpring.autoConfigureDistance = false;
+				centerSpring.distance = 0f;
+				centerSpring.autoConfigureConnectedAnchor = false;
+				centerSpring.connectedBody = m_CentralPointMass;
+				centerSpring.connectedAnchor = m_PointMasses [i].transform.localPosition;
 				centerSpring.enableCollision = false;
 
 				var triangle = new Triangle ();
