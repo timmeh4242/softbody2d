@@ -24,8 +24,13 @@
 //		public List<Transform> CollidedTransforms = new List<Transform> ();
 
 		Transform PointMassContainer;
+
 		[HideInInspector]
-		public List<PointMass> m_PointMasses = new List<PointMass> ();
+		public List<PointMass> PointMasses = new List<PointMass> ();
+//		[HideInInspector]
+//		public List<PointMass> EdgePointMasses = new List<PointMass> ();
+//		[HideInInspector]
+//		public List<PointMass> InternalPointMasses = new List<PointMass> ();
 
 		[HideInInspector]
 		public Rigidbody2D m_rigidbody;
@@ -35,11 +40,9 @@
 
 		DeformableSprite m_DeformableSprite;
 
-		[HideInInspector]
-		public List<Triangle> Triangles = new List<Triangle> ();
-
-		[HideInInspector]
-		public int[] TriangleIndex;
+//		[HideInInspector]
+//		public List<Triangle> Triangles = new List<Triangle> ();
+//		public List<int> Triangles = new List<int> ();
 
 		void Awake() {
 //			Generate (false);
@@ -64,7 +67,7 @@
 
 				UpdateCollider ();
 				if (m_DeformableSprite != null)
-//					m_DeformableSprite.UpdateMesh (m_PointMasses.ToArray ());
+//					m_DeformableSprite.UpdateMesh (PointMasses.ToArray ());
 					m_DeformableSprite.UpdateMesh ();
 			}
 		}
@@ -144,7 +147,7 @@
 				}
 			}
 
-			m_PointMasses.Clear ();
+			PointMasses.Clear ();
 
 			var angle = 2 * Mathf.PI / NumberOfPoints;
 			for (int i = 0; i < NumberOfPoints; i++) {
@@ -167,52 +170,52 @@
 				go.transform.localPosition = new Vector3 (x, y, 0f);
 				go.transform.localScale = new Vector3 (1f, 1f, 1f);
 				go.name = "PointMass (" + i + ")";
-				m_PointMasses.Add (pm);
+				PointMasses.Add (pm);
 			}
 
-			TriangleIndex = new int[m_PointMasses.Count];
-			for (int i = 0; i < m_PointMasses.Count; i++) {
-				m_PointMasses[i].CenterSpring = m_PointMasses[i].gameObject.AddComponent<SpringJoint2D> ();
-				m_PointMasses[i].CenterSpring.autoConfigureDistance = false;
-				m_PointMasses[i].CenterSpring.distance = 0f;
-				m_PointMasses[i].CenterSpring.autoConfigureConnectedAnchor = false;
-				m_PointMasses[i].CenterSpring.connectedBody = m_rigidbody;
-				m_PointMasses[i].CenterSpring.connectedAnchor = m_PointMasses [i].transform.localPosition;
-				m_PointMasses[i].CenterSpring.enableCollision = false;
+			for (int i = 0; i < PointMasses.Count; i++) {
+				PointMasses[i].CenterSpring = PointMasses[i].gameObject.AddComponent<SpringJoint2D> ();
+				PointMasses[i].CenterSpring.autoConfigureDistance = false;
+				PointMasses[i].CenterSpring.distance = 0f;
+				PointMasses[i].CenterSpring.autoConfigureConnectedAnchor = false;
+				PointMasses[i].CenterSpring.connectedBody = m_rigidbody;
+				PointMasses[i].CenterSpring.connectedAnchor = PointMasses [i].transform.localPosition;
+				PointMasses[i].CenterSpring.enableCollision = false;
 
-				var triangle = new Triangle ();
-				TriangleIndex [i] = i;
-
-				var cwSpring = m_PointMasses [i].gameObject.AddComponent<SpringJoint2D> ();
+				var cwSpring = PointMasses [i].gameObject.AddComponent<SpringJoint2D> ();
 				cwSpring.enableCollision = false;
-				var ccwSpring = m_PointMasses [i].gameObject.AddComponent<SpringJoint2D> ();
+				var ccwSpring = PointMasses [i].gameObject.AddComponent<SpringJoint2D> ();
 				ccwSpring.enableCollision = false;
 
 				if (i == 0) {
-					cwSpring.connectedBody = m_PointMasses [i + 1].GetComponent<Rigidbody2D> ();
-					ccwSpring.connectedBody = m_PointMasses [m_PointMasses.Count - 1].GetComponent<Rigidbody2D> ();
-					m_PointMasses [i].GetComponent<PointMass>().CWPointMass = m_PointMasses [i + 1].transform;
-				} else if (i == m_PointMasses.Count - 1) {
-					cwSpring.connectedBody = m_PointMasses [0].GetComponent<Rigidbody2D> ();
-					ccwSpring.connectedBody = m_PointMasses [i - 1].GetComponent<Rigidbody2D> ();
-					m_PointMasses [i].GetComponent<PointMass>().CWPointMass = m_PointMasses [0].transform;
+					cwSpring.connectedBody = PointMasses [i + 1].GetComponent<Rigidbody2D> ();
+					ccwSpring.connectedBody = PointMasses [PointMasses.Count - 1].GetComponent<Rigidbody2D> ();
+					PointMasses [i].GetComponent<PointMass>().CWPointMass = PointMasses [i + 1].transform;
+				} else if (i == PointMasses.Count - 1) {
+					cwSpring.connectedBody = PointMasses [0].GetComponent<Rigidbody2D> ();
+					ccwSpring.connectedBody = PointMasses [i - 1].GetComponent<Rigidbody2D> ();
+					PointMasses [i].GetComponent<PointMass>().CWPointMass = PointMasses [0].transform;
 				} else {
-					cwSpring.connectedBody = m_PointMasses [i + 1].GetComponent<Rigidbody2D> ();
-					ccwSpring.connectedBody = m_PointMasses [i - 1].GetComponent<Rigidbody2D> ();
-					m_PointMasses[i].GetComponent<PointMass>().CWPointMass = m_PointMasses [i + 1].transform;
+					cwSpring.connectedBody = PointMasses [i + 1].GetComponent<Rigidbody2D> ();
+					ccwSpring.connectedBody = PointMasses [i - 1].GetComponent<Rigidbody2D> ();
+					PointMasses[i].GetComponent<PointMass>().CWPointMass = PointMasses [i + 1].transform;
 				}
 
 				cwSpring.autoConfigureDistance = false;
 				ccwSpring.autoConfigureDistance = false;
 
-				m_PointMasses[i].CenterSpring.dampingRatio = DampingRatio;
-				m_PointMasses[i].CenterSpring.frequency = Frequency;
+				PointMasses[i].CenterSpring.dampingRatio = DampingRatio;
+				PointMasses[i].CenterSpring.frequency = Frequency;
 
 				cwSpring.dampingRatio = DampingRatio;
 				cwSpring.frequency = Frequency;
 
 				ccwSpring.dampingRatio = DampingRatio;
 				ccwSpring.frequency = Frequency;
+
+//				Triangles.Add (i);
+//				Triangles.Add (i + 1);
+//				Triangles.Add (0);
 			}
 
 			var anchorPoints = this.GetComponentsInChildren<AnchorPoint> ();
@@ -220,39 +223,22 @@
 
 				var currentDistance = Mathf.Infinity;
 				var shortestDistance = currentDistance;
-				for (int j = 0; j < m_PointMasses.Count; j++) {
-					currentDistance = Vector2.Distance (anchorPoints [i].transform.position, m_PointMasses [j].transform.position);
+				for (int j = 0; j < PointMasses.Count; j++) {
+					currentDistance = Vector2.Distance (anchorPoints [i].transform.position, PointMasses [j].transform.position);
 					if (currentDistance < shortestDistance) {
-						anchorPoints [i].ConnectedPoint = m_PointMasses [j].transform;
+						anchorPoints [i].ConnectedPoint = PointMasses [j].transform;
 						shortestDistance = currentDistance;
 					}
 				}
-
-//				var closestPointMass = m_PointMasses
-//					.Select(p => new { Point = p, Distance2 = p.transform.position.x * p.transform.position.x + p.transform.position.y * transform.position.y })
-//					.Aggregate((p1, p2) => p1.Distance2 < p2.Distance2 ? p1 : p2)
-//					.Point;
-//				
-//				anchorPoints [i].ConnectedPoint = closestPointMass.transform;
-
-				// reference alternative
-//				// project every element to get a map between it and the square of the distance
-//				var map = pointsList                                            
-//					.Select(p => new { Point = p, Distance = p.x * p.x + p.y * p.y });
-//
-//				var closestPoint = map // get the list of points with the min distance
-//					.Where(m => m.Distance == map.Min(t => t.Distance)) 
-//					.First() // get the first item in that list (guaranteed to exist)
-//					.Point; // take the point
 			}
 
 			UpdateCollider ();
 		}
 
 		void UpdateCollider () {
-			var points = new Vector2[m_PointMasses.Count];
-			for (int i = 0; i < m_PointMasses.Count; i++) {
-				points [i] = m_PointMasses [i].transform.localPosition;
+			var points = new Vector2[PointMasses.Count];
+			for (int i = 0; i < PointMasses.Count; i++) {
+				points [i] = PointMasses [i].transform.localPosition;
 			}
 			m_collider.points = points;
 		}
@@ -260,9 +246,9 @@
 		public void ClearForces () {
 			m_rigidbody.velocity = Vector2.zero;
 
-			for (int i = 0; i < m_PointMasses.Count; i++) {
-				m_PointMasses [i].GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
-				m_PointMasses [i].transform.localPosition = m_PointMasses [i].GetComponent<PointMass> ().StartingPosition;
+			for (int i = 0; i < PointMasses.Count; i++) {
+				PointMasses [i].GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
+				PointMasses [i].transform.localPosition = PointMasses [i].GetComponent<PointMass> ().StartingPosition;
 			}
 		}
 
@@ -277,16 +263,16 @@
 
 			m_rigidbody.isKinematic = value;
 //			m_rigidbody.drag = drag;
-			for (int i = 0; i < m_PointMasses.Count; i++) {
+			for (int i = 0; i < PointMasses.Count; i++) {
 //				m_PointMasses [i].m_rigidbody.isKinematic = value;
-				m_PointMasses [i].m_rigidbody.drag = drag;
+				PointMasses [i].m_rigidbody.drag = drag;
 			}
 		}
 
 		public void AddForce(Vector2 force) {
 			m_rigidbody.AddForce (force);
-			for (int i = 0; i < m_PointMasses.Count; i++) {
-				m_PointMasses [i].m_rigidbody.AddForce (force);
+			for (int i = 0; i < PointMasses.Count; i++) {
+				PointMasses [i].m_rigidbody.AddForce (force);
 			}
 		}
 	}

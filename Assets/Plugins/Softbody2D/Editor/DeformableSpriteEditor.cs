@@ -11,10 +11,10 @@ namespace FinerGames {
 		{
 			DrawDefaultInspector();
 
-			if(GUILayout.Button("Update Mesh"))
+			if(GUILayout.Button("Initialize"))
 			{
 				DeformableSprite script = (DeformableSprite)target;
-				script.UpdateMesh ();
+				script.Initialize (true);
 			}
 		}
 //		GUIContent updateMeshContent = new GUIContent("Update Mesh", "Make the mesh conform to the collider");
